@@ -5,15 +5,23 @@
 
 int lightSensor = 0;
 int lightReading;
+int LEDpin = 11;
+int LEDstrength;
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  //Read photocell
   lightReading = analogRead(lightSensor);
+
+  //Print photocell read
   Serial.print("Analog Read = ");
   Serial.println(lightReading);
+
+  //LED must turn on when light is weaker
+  lightReading = 1023 - lightReading;
+  LEDstrength = map(lightReading, 0, 1023, 0, 255);
+  analogWrite(LEDpin, LEDstrength);
 }
