@@ -8,21 +8,21 @@ int val = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(2, OUTPUT);
+  
+ Serial.begin(9600);
+ Serial.println("Start");
+  pinMode(13, OUTPUT);
 }
 
-void led() {
+void loop() {
+  // put your main code here, to run repeatedly:
+  val = analogRead(MIC);
+  Serial.print("Microphone read: ");
+  Serial.println(val); 
  val = analogRead(MIC)*50;
  if (val>1)  {
   digitalWrite(2, HIGH);
  } else {
   digitalWrite(2, LOW);
  }
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  //val = analogRead(0);
-  //Serial.println(val);
-  led();
-}
+} 
