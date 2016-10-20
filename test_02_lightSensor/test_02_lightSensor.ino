@@ -9,6 +9,7 @@ int LEDpin = 13;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(LEDpin, OUTPUT);
 }
 
 void loop() {
@@ -21,8 +22,8 @@ void loop() {
 
   //LED must turn on when light is stronger
   if (lightReading > 300) {
-    analogWrite(LEDpin, HIGH);  
+    digitalWrite(LEDpin, HIGH);  
   } else {
-    analogWrite(LEDpin,LOW);
+    digitalWrite(LEDpin,LOW);
   }
 }
