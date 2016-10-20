@@ -48,6 +48,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
         IBI = sampleCounter - lastBeatTime;         // measure time between beats in mS
       lastBeatTime = sampleCounter;               // keep track of time for next pulse
 
+      digitalWrite(blinkPin,HIGH);                // turn on pin 13 LED
       if(secondBeat){                        // if this is the second beat, if secondBeat == TRUE
         secondBeat = false;                  // clear secondBeat flag
         for(int i=0; i<=9; i++){             // seed the running total to get a realisitic BPM at startup
@@ -81,6 +82,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   }
 
   if (Signal < thresh && Pulse == true){   // when the values are going down, the beat is over
+    digitalWrite(blinkPin,LOW);            // turn off pin 13 LED
 
     Pulse = false;                         // reset the Pulse flag so we can do it again
     amp = P - T;                           // get amplitude of the pulse wave
