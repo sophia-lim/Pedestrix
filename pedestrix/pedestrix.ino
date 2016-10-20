@@ -13,9 +13,12 @@
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
+
 //  Variables
 int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
 int blinkPin = 13;                // Pin to blink led at each beat
+int lightSensor = 1;
+int lightReading;
 #define PIN 6                     // Pin to blink NeoPixel Ring
 
 // Parameter 1 = number of pixels in strip
@@ -24,7 +27,8 @@ int blinkPin = 13;                // Pin to blink led at each beat
 // NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 
-TimerObject *neoPixelTimer = new TimerObject(10000); //will call the callback in the interval of 1min
+// Will call the callback in the interval of 10 seconds
+TimerObject *neoPixelTimer = new TimerObject(10000); 
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -78,12 +82,18 @@ void setup(){
 }
 
 void loop(){
+  
   neoPixelTimer->Update();
+  
+  //Read photocell
+  lightReading = analogRead(lightSensor);
+
+  //Print photocell read
+  Serial.print("Analog Read = ");
+  Serial.println(lightReading);
+  
   if (QS == true){                       // Quantified Self flag is true when arduino finds a heartbeat
     Serial.print("BPM = ");
     Serial.println(BPM);
   }
 }
-
-
-
