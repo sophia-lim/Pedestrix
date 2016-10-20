@@ -20,7 +20,7 @@ int blinkPin = 13;                // Pin to blink led at each beat
 int lightSensor = 1;
 int lightReading;
 #define PIN 6                     // Pin to blink NeoPixel Ring
-int switchPin = 5;                // SPDT switch
+//int switchPin = 5;                // SPDT switch
 boolean carNearby;
 
 // Parameter 1 = number of pixels in strip
@@ -110,7 +110,7 @@ void isCarNearby(int lightReading){
 
 void setup(){
   pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
-  pinMode(switchPin,OUTPUT);        // Set the SPDT switch to be an input
+//  pinMode(switchPin,OUTPUT);        // Set the SPDT switch to be an input
   Serial.begin(115200);             // we agree to talk fast!
   
   //Sets up to read Pulse Sensor signal every 2mS
@@ -127,11 +127,11 @@ void setup(){
 
 void loop(){
   //Variable for switch state
-  int switchValue;
+  //int switchValue;
   
   //Stores the switch value into its respective variable
-  switchValue = digitalRead(switchPin);
-  Serial.println(switchValue);
+  //switchValue = digitalRead(switchPin);
+//  Serial.println(switchValue);
   
   //Read photocell
   lightReading = analogRead(lightSensor);
