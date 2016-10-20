@@ -26,8 +26,7 @@ int blinkPin = 13;                // Pin to blink led at each beat
 // NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 
-TimerObject *neoPixelTimer = new TimerObject(60000); //will call the callback in the interval of 1min
-
+TimerObject *neoPixelTimer = new TimerObject(10000); //will call the callback in the interval of 1min
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -35,6 +34,36 @@ volatile int Signal;                // holds the incoming raw data
 volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
 volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
 volatile boolean QS = false;        // becomes true when Arduino finds a beat.
+
+//Function prototype
+void colorWipe(uint32_t c, uint8_t wait);
+
+//The uint32_t declaration reserves 32-bytes for the given variable
+//NeoPixel color strings are only 24 bytes long, but there isn't a declaration for that.
+//This method takes in a colour value in RGB and a wait time in millis
+void colorWipe(uint32_t c, uint8_t wait) {
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, c);
+    strip.show();
+    delay(wait);
+  }
+}
+
+//Function prototype
+void pulseColour(); 
+
+//This methods maps the BPM to a colour
+void pulseColour() {
+  if (BPM < 80) {
+    colorWipe(strip.Color(255, 0, 0), 50); // Red
+  } else if (BPM >= 80 && BPM < 90) {
+    colorWipe(strip.Color(0, 0, 255), 50); // Blue
+  } else if (BPM >= 90 && BPM < 120) {
+    colorWipe(strip.Color(0, 0, 255), 50); // Blue
+  } else {
+    colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
+  }
+}
 
 
 void setup(){
@@ -58,4 +87,6 @@ void loop(){
     Serial.println(BPM);
   }
 }
+
+
 

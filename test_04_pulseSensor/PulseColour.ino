@@ -1,4 +1,4 @@
-
+/*
 //Function prototype
 void pulseColour(); 
 
@@ -17,15 +17,15 @@ void pulseColour() {
 
 
 //Function prototype
-void colorWipe(uintt32_ c, uint8_t wait);
+void colorWipe(uint32_t c, uint8_t wait);
 
 //The uint32_t declaration reserves 32-bytes for the given variable
 //NeoPixel color strings are only 24 bytes long, but there isn't a declaration for that.
 //This method takes in a colour value in RGB and a wait time in millis
-void colorWipe(uintt32_ c, uint8_t wait) {
+void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
   }
-}
+}*/
