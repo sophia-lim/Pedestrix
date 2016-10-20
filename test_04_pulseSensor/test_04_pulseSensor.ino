@@ -57,7 +57,7 @@ void pulseColour() {
   if (BPM < 80) {
     colorWipe(strip.Color(255, 0, 0), 50); // Red
   } else if (BPM >= 80 && BPM < 90) {
-    colorWipe(strip.Color(0, 0, 255), 50); // Blue
+    colorWipe(strip.Color(0, 255, 0), 50); // Green
   } else if (BPM >= 90 && BPM < 120) {
     colorWipe(strip.Color(0, 0, 255), 50); // Blue
   } else {
