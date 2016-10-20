@@ -20,6 +20,7 @@ int blinkPin = 13;                // Pin to blink led at each beat
 int lightSensor = 1;
 int lightReading;
 #define PIN 6                     // Pin to blink NeoPixel Ring
+int switchPin = 5;                // SPDT switch
 boolean carNearby;
 
 // Parameter 1 = number of pixels in strip
@@ -68,6 +69,34 @@ void pulseColour() {
   }
 }
 
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+//This method makes the rainbow equally distributed throughout
+void rainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
+    for(i=0; i< strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+    }
+    strip.show();
+    delay(wait);
+  }
+}
+
 //This method returns true when a car is nearby, and false when a car is not nearby
 //It takes as parameter an integer, which is the analog reading from the photocell at A1
 
@@ -81,6 +110,7 @@ void isCarNearby(int lightReading){
 
 void setup(){
   pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
+  pinMode(switchPin,OUTPUT);        // Set the SPDT switch to be an input
   Serial.begin(115200);             // we agree to talk fast!
   
   //Sets up to read Pulse Sensor signal every 2mS
@@ -96,29 +126,48 @@ void setup(){
 }
 
 void loop(){
+  //Variable for switch state
+  int switchValue;
+  
+  //Stores the switch value into its respective variable
+  switchValue = digitalRead(switchPin);
+  Serial.println(switchValue);
   
   //Read photocell
   lightReading = analogRead(lightSensor);
-  
   isCarNearby(lightReading);
-  
-  //If a car is detected through photocell, light LED and update the neoPixelTimer
-  if (carNearby == true) {
-    neoPixelTimer->Resume();
-    Serial.println("Light up");
+
+  //If switchValue is HIGH, then activate pulse sensor-driven colour
+  if (switchValue == HIGH) {
+    Serial.println("Automatic");
+    //If a car is detected through photocell, light LED and update the neoPixelTimer
+    if (carNearby == true) {
+      neoPixelTimer->Resume();
+      Serial.println("Light up");
+    } else {
+      colorWipe(strip.Color(0, 0, 0), 50); 
+      Serial.println("Turn off light");
+      neoPixelTimer->Pause();
+    }
+      neoPixelTimer->Update();
+      
+      //Print photocell read
+      Serial.print("Analog Read = ");
+      Serial.println(lightReading);
+      
+    // Quantified Self flag is true when arduino finds a heartbeat
+    if (QS == true){                       
+      Serial.print("BPM = ");
+      Serial.println(BPM);
+    }
+
+  //Else if switchValue is LOW, then activate random colouring
   } else {
-    colorWipe(strip.Color(0, 0, 0), 50); 
-    Serial.println("Turn off light");
-    neoPixelTimer->Pause();
-  }
-  
-    neoPixelTimer->Update();
-  //Print photocell read
-  Serial.print("Analog Read = ");
-  Serial.println(lightReading);
-  
-  if (QS == true){                       // Quantified Self flag is true when arduino finds a heartbeat
-    Serial.print("BPM = ");
-    Serial.println(BPM);
+    Serial.println("Manual");
+    if (carNearby == true) {
+      rainbowCycle(20);
+    } else {
+      colorWipe(strip.Color(0, 0, 0), 50);       
+    }
   }
 }
