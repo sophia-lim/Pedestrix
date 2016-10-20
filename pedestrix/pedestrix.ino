@@ -29,7 +29,7 @@ boolean carNearby;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 
 // Will call the callback in the interval of 10 seconds
-TimerObject *neoPixelTimer = new TimerObject(10000); 
+TimerObject *neoPixelTimer = new TimerObject(3000); 
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -71,13 +71,12 @@ void pulseColour() {
 //This method returns true when a car is nearby, and false when a car is not nearby
 //It takes as parameter an integer, which is the analog reading from the photocell at A1
 
-boolean isCarNearby(int lightReading){
+void isCarNearby(int lightReading){
   if (lightReading > 300) {
     carNearby = true;
   } else {
     carNearby = false;
   }
-  return carNearby;
 }
 
 void setup(){
@@ -90,6 +89,8 @@ void setup(){
   //Sets up NeoPixel Ring
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  
+  //Set function callback
   neoPixelTimer->setOnTimer(&pulseColour);
   neoPixelTimer->Start();
 }
@@ -99,11 +100,19 @@ void loop(){
   //Read photocell
   lightReading = analogRead(lightSensor);
   
-  //If a car is detected through photocell, update the neoPixelTimer
-  if (isCarNearby(lightReading)) {
-    neoPixelTimer->Update();
+  isCarNearby(lightReading);
+  
+  //If a car is detected through photocell, light LED and update the neoPixelTimer
+  if (carNearby == true) {
+    neoPixelTimer->Resume();
+    Serial.println("Light up");
+  } else {
+    colorWipe(strip.Color(0, 0, 0), 50); 
+    Serial.println("Turn off light");
+    neoPixelTimer->Pause();
   }
   
+    neoPixelTimer->Update();
   //Print photocell read
   Serial.print("Analog Read = ");
   Serial.println(lightReading);
