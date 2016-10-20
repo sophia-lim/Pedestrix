@@ -20,6 +20,7 @@ int blinkPin = 13;                // Pin to blink led at each beat
 int lightSensor = 1;
 int lightReading;
 #define PIN 6                     // Pin to blink NeoPixel Ring
+boolean carNearby;
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -67,6 +68,18 @@ void pulseColour() {
   }
 }
 
+//This method returns true when a car is nearby, and false when a car is not nearby
+//It takes as parameter an integer, which is the analog reading from the photocell at A1
+
+boolean isCarNearby(int lightReading){
+  if (lightReading > 300) {
+    carNearby = true;
+  } else {
+    carNearby = false;
+  }
+  return carNearby;
+}
+
 void setup(){
   pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
   Serial.begin(115200);             // we agree to talk fast!
@@ -83,11 +96,14 @@ void setup(){
 
 void loop(){
   
-  neoPixelTimer->Update();
-  
   //Read photocell
   lightReading = analogRead(lightSensor);
-
+  
+  //If a car is detected through photocell, update the neoPixelTimer
+  if (isCarNearby(lightReading)) {
+    neoPixelTimer->Update();
+  }
+  
   //Print photocell read
   Serial.print("Analog Read = ");
   Serial.println(lightReading);
