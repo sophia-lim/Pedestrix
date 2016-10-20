@@ -1,0 +1,10 @@
+Analog read for photocell
+
+In a dark room without light at night
+Analog reads = [0,12]
+
+In a dark room with dimmed light
+Analog reads = [60,100]
+
+In a dark room with a bright light
+Analog reads = >300
