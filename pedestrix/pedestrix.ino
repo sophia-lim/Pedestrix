@@ -47,7 +47,7 @@ void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
-    delay(wait);
+    //delay(wait);
   }
 }
 
@@ -63,7 +63,7 @@ void pulseColour() {
   } else if (BPM >= 90 && BPM < 120) {
     colorWipe(strip.Color(0, 0, 255), 50); // Blue
   } else {
-    colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
+    colorWipe(strip.Color(255, 255, 255), 50); // White RGBW
   }
 }
 
