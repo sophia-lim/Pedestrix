@@ -138,8 +138,8 @@ void loop(){
   isCarNearby(lightReading);
 
   //If switchValue is HIGH, then activate pulse sensor-driven colour
-  if (switchValue == HIGH) {
-    Serial.println("Automatic");
+  //if (switchValue == HIGH) {
+    //Serial.println("Automatic");
     //If a car is detected through photocell, light LED and update the neoPixelTimer
     if (carNearby == true) {
       neoPixelTimer->Resume();
@@ -162,12 +162,12 @@ void loop(){
     }
 
   //Else if switchValue is LOW, then activate random colouring
-  } else {
-    Serial.println("Manual");
-    if (carNearby == true) {
-      rainbowCycle(20);
-    } else {
-      colorWipe(strip.Color(0, 0, 0), 50);       
-    }
-  }
+  //} else {
+  //Serial.println("Manual");
+  //if (carNearby == true) {
+  //  rainbowCycle(20);
+  //} else {
+  //  colorWipe(strip.Color(0, 0, 0), 50);       
+  //}
+  //}
 }
