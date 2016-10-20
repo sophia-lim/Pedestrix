@@ -1,5 +1,6 @@
-//Check BPM every minute
 
+//Function prototype
+void pulseColour(); 
 
 //This methods maps the BPM to a colour
 void pulseColour() {
@@ -13,6 +14,10 @@ void pulseColour() {
     colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
   }
 }
+
+
+//Function prototype
+void colorWipe(uintt32_ c, uint8_t wait);
 
 //The uint32_t declaration reserves 32-bytes for the given variable
 //NeoPixel color strings are only 24 bytes long, but there isn't a declaration for that.

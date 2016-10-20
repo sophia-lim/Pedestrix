@@ -5,6 +5,9 @@
  * Original Pulse Sensor Amped 1.4 code taken from Joel Murphy and Yury Gitman at http://www.pulsesensor.com
  * Edits: The BPM is printed out when a pulse is detected
  */
+ 
+//Arduino Timer Object library
+#include <TimerObject.h>
 
 //Adafruit NeoPixel ring library
 #include <Adafruit_NeoPixel.h>
@@ -23,6 +26,9 @@ int blinkPin = 13;                // Pin to blink led at each beat
 // NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 
+TimerObject *neoPixelTimer = new TimerObject(60000); //will call the callback in the interval of 1min
+
+
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
 volatile int Signal;                // holds the incoming raw data
@@ -30,22 +36,26 @@ volatile int IBI = 600;             // int that holds the time interval between 
 volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
 volatile boolean QS = false;        // becomes true when Arduino finds a beat.
 
+
 void setup(){
   pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
   Serial.begin(115200);             // we agree to talk fast!
+  
   //Sets up to read Pulse Sensor signal every 2mS
   interruptSetup();
+  
   //Sets up NeoPixel Ring
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  neoPixelTimer->setOnTimer(&pulseColour);
+  neoPixelTimer->Start();
 }
 
 void loop(){
+  neoPixelTimer->Update();
   if (QS == true){                       // Quantified Self flag is true when arduino finds a heartbeat
     Serial.print("BPM = ");
     Serial.println(BPM);
   }
 }
-
-
 
